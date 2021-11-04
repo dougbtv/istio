@@ -546,7 +546,10 @@ func applyMetadata(pod *corev1.Pod, injectedPodData corev1.Pod, req InjectionPar
 
 	// Deprecated; should be set directly in the template instead
 	for k, v := range req.injectedAnnotations {
-		pod.Annotations[k] = v
+		// Omit overwriting existing annotations.
+		if _, hasval := pod.Annotations[k]; !hasval {
+			pod.Annotations[k] = v
+		}
 	}
 }
 
